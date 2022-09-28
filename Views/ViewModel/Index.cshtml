@@ -1,0 +1,64 @@
+﻿@model PagedList.IPagedList<HospitalMvcProject.Models.Doctor>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Index";
+}
+<hr />
+@Html.ActionLink("Add New Doctor", "Create", "ViewModel", htmlAttributes: new { @class = "btn", @role = "button" })
+<h2>Doctor Information</h2>
+
+@using (Html.BeginForm("Index", "ViewModel", FormMethod.Get))
+{
+    <p>
+        Find by name: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" class="btn btn-primary" />
+    </p>
+}
+<div>
+    <table border="1" class="highlight">
+        <tr>
+            <th>
+                @Html.ActionLink("Doctor Name", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
+            </th>
+            <th>Phone No</th>
+            <th>Email</th>
+            <th>Joining Date</th>
+            <th>Image</th>
+            <th>Edit</th>
+            <th>Delete</th>
+
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.DoctorName</td>
+                <td>@item.PhoneNo</td>
+                <td>@item.Email</td>
+                <td>@Convert.ToString(String.Format("{0:MM/dd/yyyy}", item.JoiningDate))</td>
+                <td><img src="@Url.Content(item.ImageUrl)" height="70" width="65" /></td>
+                <td>@Html.ActionLink("Edit", "Edit", new { id = item.DoctorID }, htmlAttributes: new { @class = "btn", @role = "button" })</td>
+                <td>@Html.ActionLink("Delete", "Delete", "ViewModel", new { id = item.DoctorID }, htmlAttributes: new { @class = "btn", @role = "button" })</td>
+            </tr>
+        }
+    </table>
+</div>
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+<script>
+    $(document).ready(function () {
+        $('.datepicker').datepicker();
+    });
+
+    function activatejQueryTable() {
+        $("#TeacherTable").DataTable();
+    }
+
+    $(function () {
+        activatejQueryTable();
+    });
+
+</script>

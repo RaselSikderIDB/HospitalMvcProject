@@ -1,0 +1,129 @@
+﻿@model HospitalMvcProject.Models.Patient
+@{
+    /**/
+
+    ViewBag.Title = "Single";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var listMessage = ViewData["List"] as List<HospitalMvcProject.Models.Patient>;
+}
+
+<h2>Add New Patients(Ajax)</h2>
+
+@using (Ajax.BeginForm(
+        "Single",
+        "AjaxPatients",
+        new AjaxOptions
+        {
+            OnSuccess = "OnSuccess",
+            OnFailure = "OnFailure",
+            LoadingElementId = "progress",
+            HttpMethod = "POST"
+        },
+        new { enctype = "multipart/form-data" }
+    ))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m => m.PatientID)
+
+
+    <br />
+    <div class="form-group">
+        @Html.LabelFor(model => model.PatientName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div>
+            @Html.EditorFor(model => model.PatientName, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.PatientName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div>
+            Male
+            @Html.RadioButtonFor(model => model.Gender, "Male", new { htmlAttributes = new { @class = "form-control" } })
+            Female
+            @Html.RadioButtonFor(model => model.Gender, "Female", new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Age, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div>
+            @Html.EditorFor(model => model.Age, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Age, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.BirthDate, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div>
+            @Html.EditorFor(model => model.BirthDate, "date", new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div>
+            @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Department.DepartmentID, "Department", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div>
+            @Html.DropDownList("DepartmentID")
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.ReferDoctor, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div>
+            @Html.DropDownList("ReferDoctor")
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Picture, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div>
+            <input type="file" name="img" />
+        </div>
+    </div>
+    <div>
+        <input type="submit" class="btn btn-primary" value="Save" />
+    </div>
+
+}
+
+
+
+
+<table class="table table-striped">
+    <tr>
+        <th>PatientName</th>
+        <th>Gender</th>
+        <th>Age</th>
+        <th>BirthDate</th>
+        <th>Address</th>
+        <th>Department</th>
+        <th>ReferDoctor</th>
+        <th>Picture</th>
+        <th>#</th>
+        <th>#</th>
+    </tr>
+    @foreach (var item in listMessage)
+    {
+        <tr>
+            <td>@item.PatientName</td>
+            <td>@item.Gender</td>
+            <td>@item.Age</td>
+            <td>@item.BirthDate</td>
+            <td>@item.Address</td>
+            <td>@Html.DisplayFor(m => item.Department.DepartmentName)</td>
+            <td>@Html.DisplayFor(m => item.Doctor.DoctorName)</td>
+            <td><img src="@item.Picture" width="100"></td>
+            <td><a href="/AjaxPatients/Single?id=@item.PatientID">Edit</a></td>
+            <td><a href="/AjaxPatients/Delete?id=@item.PatientID" onclick="return confirm('Are you sure to delete?')">Delete</a></td>
+            <td><a href="/AjaxPatients/ExportPatientDetails?id=@item.PatientID">Report</a></td>
+        </tr>
+    }
+</table>
+
+<p>
+    <a href="@Url.Action("ExportPatient")" class="btn btn-success">All Patients Report</a>
+</p>

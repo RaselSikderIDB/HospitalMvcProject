@@ -1,0 +1,93 @@
+﻿@model HospitalMvcProject.Models.ViewModels.DoctorCreateViewModel
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+<h2>Add New Doctor</h2>
+@using (Html.BeginForm("AddOrEdit", "ViewModel", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "SubmitForm" }))
+{
+    @Html.AntiForgeryToken();
+    <div class="row">
+        <form class="col s12">
+            <div class="row">
+                <div class="input-field col s2">
+                    @Html.LabelFor(t => t.DoctorName)
+                </div>
+                <div class="input-field col s10">
+                    @Html.EditorFor(t => t.DoctorName)
+                    @Html.ValidationMessageFor(p => p.DoctorName, "")
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s2">
+                    @Html.LabelFor(t => t.PhoneNo)
+                </div>
+                <div class="input-field col s10">
+                    @Html.EditorFor(t => t.PhoneNo)
+                    @Html.ValidationMessageFor(p => p.PhoneNo, "")
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s2">
+                    @Html.LabelFor(t => t.Email)
+                </div>
+                <div class="input-field col s10">
+                    @Html.EditorFor(t => t.Email)
+                    @Html.ValidationMessageFor(p => p.Email, "")
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="input-field col s2">
+                    @Html.LabelFor(model => model.JoiningDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                </div>
+                <div class="input-field col s10">
+                    @Html.EditorFor(model => model.JoiningDate, "Date", new { htmlAttributes = new { @class = "datepicker" } })
+                    @Html.ValidationMessageFor(model => model.JoiningDate)
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="input-field col s2">
+                    @Html.LabelFor(model => model.ImageUrl)
+                </div>
+                <img src="~/Images/no.png" height="80" width="75" class="change_edit" />
+                <input type="file" name="ImageFile" class="changeImage" required />
+                @Html.ValidationMessageFor(model => model.ImageUrl, "")
+
+            </div>
+            <div class="row">
+                <div class="input-field col s2">
+                    <input type="submit" value="Create" class="btn" />
+                </div>
+            </div>
+        </form>
+    </div>
+}
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+
+<script src="~/Content/js/materialize.min.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        $('.datepicker').datepicker();
+    });
+
+    $(function () {
+        $('.changeImage').change(function () {
+            var input = this;
+            if (input.files) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('.change_edit').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+
+        })
+    })
+</script>
+
